@@ -139,7 +139,7 @@ def see_color():
 async def turn(degrees):
     # O descoberto foi que 285 de ângulo faz o robô girar 90 graus
     # Nesse caso é só fazer a regra de três para o quanto é necessário para outros ângulos
-    mov_degrees = (19 * degrees) / 6                                                     # Regra de três (já simplificada)
+    mov_degrees = int((19 * degrees) / 6)                                                # Regra de três (já simplificada)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, mov_degrees, 100, velocity=360) # Movendo o robô
 
 runloop.run(main()) # Rodando a função principal
