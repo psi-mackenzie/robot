@@ -41,7 +41,7 @@ async def main():
     await runloop.sleep_ms(100)
     
     motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
-    await runloop.until(lambda: distance() < 4.5)
+    await runloop.until(lambda: distance() < 4.6)
     motor_pair.stop(motor_pair.PAIR_1)
 
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
@@ -58,7 +58,7 @@ async def main():
 
 
     motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
-    await runloop.until(lambda: distance() < 4.5)
+    await runloop.until(lambda: distance() < 4.6)
     motor_pair.stop(motor_pair.PAIR_1)
 
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
@@ -70,11 +70,16 @@ async def main():
 
     # Reposiocionar para o terceiro poluente
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -70, 0, velocity=360) # Ir um pouco para trás
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=360) # Ir um pouco para trás
     await turn(90)                                                            # Girar 90 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 515, 0, velocity=360) # Ir para frente até o terceiro poluente
     await turn(-90)                                                            # Girar 90 graus para esquerda
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=360)# Posicionar o robô para a missão
+
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print("Terceiro poluente:")
     await do_pollutant_mission(center_color, -1) # Fazer a missão
@@ -83,14 +88,18 @@ async def main():
 
     # Reposicionar o robô para o quarto poluente
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -70, 0, velocity=360)# Ir um pouco para trás
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=360)# Ir um pouco para trás
     await turn(45)                                                            # Girar 45 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 105, 0, velocity=360)# Ir mediamente para frente
     await turn(45)                                                            # Girar 45 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 605, 0, velocity=360) # Ir mediamente para frente
     await motor.run_for_degrees(port.D, 528, 360)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 135, 0, velocity=360)
 
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print("Quarto poluente:")
     await do_pollutant_mission(center_color, -1) # Fazer a missão
@@ -99,11 +108,16 @@ async def main():
 
     # Reposicionar o robô para o quinto poluente
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -70, 0, velocity=360) # Ir um pouco para trás
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=360) # Ir um pouco para trás
     await turn(90)                                                            # Girar 90 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 525, 0, velocity=360) # Ir para a frente até o quinto poluente
     await turn(-90)                                                            # Girar 90 graus para esquerda
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 80, 0, velocity=360)# Posicionar o robô para a missão
+
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print("Quinto poluente:")
     await do_pollutant_mission(center_color, -1) # Fazer a missão
@@ -114,7 +128,12 @@ async def main():
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, -340, 0, velocity=360) # Ir para trás até +/- o centro
     await turn(180)                                                            # Girar 180 graus para direita
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 325, 0, velocity=360)
+
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print(angle())
     await turn(180 - angle())
@@ -127,11 +146,16 @@ async def main():
 
     # Reposicionar o robô para o sétimo poluente
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -70, 0, velocity=360) # Ir um pouco para trás
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=360) # Ir um pouco para trás
     await turn(90)                                                            # Girar 90 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 525, 0, velocity=360) # Ir para frente até o terceiro poluente
     await turn(-90)                                                            # Girar 90 graus para esquerda
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 90, 0, velocity=360)# Posicionar o robô para a missão
+
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print("Sétimo poluente:")
     await do_pollutant_mission(center_color, 1) # Fazer a missão
@@ -140,13 +164,18 @@ async def main():
 
     # Reposicionar o robô para o oitavo poluente
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -70, 0, velocity=360)# Ir um pouco para trás
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=360)# Ir um pouco para trás
     await turn(45)                                                            # Girar 45 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 105, 0, velocity=360)# Ir mediamente para frente
     await turn(45)                                                            # Girar 45 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 605, 0, velocity=360) # Ir mediamente para frente
     await motor.run_for_degrees(port.D, 528, 360)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 155, 0, velocity=360)
+
+    motor_pair.move(motor_pair.PAIR_1, 0, velocity=360)
+    await runloop.until(lambda: distance() < 4.6)
+    motor_pair.stop(motor_pair.PAIR_1)
+
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=360) # Voltar até o primeiro poluente
 
     print("Oitavo poluente:")
     await do_pollutant_mission(center_color, 1) # Fazer a missão
