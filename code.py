@@ -10,26 +10,20 @@ import force_sensor
 async def main():
     motion_sensor.set_yaw_face(motion_sensor.TOP)
     motion_sensor.reset_yaw(0)
-    motor_pair.pair(motor_pair.PAIR_1, port.D, port.C) # Definir o Par de Motores 1 para F e E
-    
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 760, 0, velocity=1000)
-    await turn(90)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 300, 0, velocity=1000)
-    await turn(-90)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 610, 0, velocity=1000)
-    await turn(90)
-    await turn(angle() + 90)
-    await motor.run_for_degrees(port.A, -400, 500)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -245, 0, velocity=1000)
-    await motor.run_for_degrees(port.A, 60, 100)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 325, 0, velocity=1000)
-    await turn(90)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -140, 0, velocity=1000)
-    await motor.run_for_degrees(port.A, -50, 100)
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 140, 0, velocity=1000)
+    motor_pair.pair(motor_pair.PAIR_1, port.C, port.D) # Definir o Par de Motores 1 para F e E
 
-
-    return
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 1000, 0, velocity=500)
+    await turn(45)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 495, 0, velocity=500)
+    await turn(45)
+    await turn(90 + angle())
+    await motor.run_for_degrees(port.F, -175, 100)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -470, 0, velocity=500)
+    await motor.run_for_degrees(port.F, 75, 100)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 300, 0, velocity=500)
+    await turn(110)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -250, 0, velocity=500)
+    await motor.run_for_degrees(port.F, -75, 100)
 
     center_color = 0 # Definir varíavel para representar a cor do centro da mesa
 
@@ -168,7 +162,7 @@ async def color(depth=20):
 async def turn(degrees):
     # O descoberto foi que 285 de ângulo faz o robô girar 90 graus
     # Nesse caso é só fazer a regra de três para o quanto é necessário para outros ângulos
-    mov_degrees = int((267 * degrees) / 90)                                                # Regra de três (já simplificada)
+    mov_degrees = int((213 * degrees) / 90)                                                # Regra de três (já simplificada)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, mov_degrees, 100, velocity=500) # Movendo o robô
 
 async def go_to_pollutant():
