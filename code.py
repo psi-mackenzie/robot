@@ -1,5 +1,6 @@
 from hub import port, motion_sensor
 import color_sensor
+import motor
 import motor_pair
 import runloop
 import distance_sensor
@@ -12,10 +13,8 @@ async def main():
 
     center_color = 0 # Definir varíavel para representar a cor do centro da mesa
 
-    return
-
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 920, 0, velocity=500)        # Mover para frente até a rampa
-    await turn(90)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 915, 0, velocity=500)        # Mover para frente até a rampa
+    await turn(94)
     motion_sensor.reset_yaw(0)                                                            # Girar 90 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 1200, 0, velocity=750)
     await runloop.sleep_ms(100)
@@ -30,7 +29,9 @@ async def main():
     print("A cor do centro identicada foi {}".format(center_color))
 
     print("Primeiro poluente:")
+    await turn(angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, -510, 0, velocity=500)
+    await turn(angle())
     await turn(90)                                                            # Girar 90 graus para direita
     await turn(90 + angle())
     motion_sensor.reset_yaw(0)                                                # Girar 90 graus para direita
@@ -40,7 +41,7 @@ async def main():
 
     print("Segundo poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500)
     await turn(-90)
     await turn(-90 + angle())                                                            # Girar 90 graus para direita
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para frente até o terceiro poluente
@@ -52,7 +53,7 @@ async def main():
 
     print("Terceiro poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500) # Ir para a frente até o quinto poluente
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500) # Ir para a frente até o quinto poluente
     await turn(-90)
     await turn(-90 + angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para a frente até o quinto poluente
@@ -64,7 +65,7 @@ async def main():
 
     print("Quarto poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500)
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500)
     await turn(-90)                                                            # Girar 90 graus para direita
     await turn(-90 + angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para frente até o terceiro poluente
@@ -76,9 +77,9 @@ async def main():
 
     print("Quinto poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
+    await turn(angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, -380, 0, velocity=500) # Ir para trás até +/- o centro
-    await turn(180)                                                        # Girar 180 graus para direita
-    await turn(-180 + angle())
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, 436, 100, velocity=500)        # Mover para frente até a rampa
     await runloop.sleep_ms(100)
     motion_sensor.reset_yaw(0)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 100, 0, velocity=500) # Ir para trás até +/- o centro
@@ -88,7 +89,7 @@ async def main():
 
     print("Sexto poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500) # Ir para a frente até o quinto poluente
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500) # Ir para a frente até o quinto poluente
     await turn(-90)
     await turn(-90 + angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para a frente até o quinto poluente
@@ -100,7 +101,7 @@ async def main():
 
     print("Sétimo poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500) # Ir para a frente até o quinto poluente
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500) # Ir para a frente até o quinto poluente
     await turn(-90)
     await turn(-90 + angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para a frente até o quinto poluente
@@ -112,7 +113,7 @@ async def main():
 
     print("Oitavo poluente:")
     await runloop.sleep_ms(100)                                                # Esperar 500 milissegundos
-    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -85, 0, velocity=500) # Ir para a frente até o quinto poluente
+    await motor_pair.move_for_degrees(motor_pair.PAIR_1, -80, 0, velocity=500) # Ir para a frente até o quinto poluente
     await turn(-90)
     await turn(-90 + angle())
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 510, 0, velocity=500) # Ir para a frente até o quinto poluente
@@ -124,6 +125,7 @@ async def main():
 
 async def do_pollutant_mission(center_color, k):
     await runloop.sleep_ms(100) # Esperar 500 milissegundos
+    await turn(angle())
     pollutant_color = await color() # Ver a cor do sensor
     print("A cor do poluente identicada foi {}".format(pollutant_color))
 
@@ -153,9 +155,9 @@ async def color(depth=20):
             return await color(depth - 1)
 
 async def turn(degrees):
-    # O descoberto foi que 285 de ângulo faz o robô girar 90 graus
+    # O descoberto foi que 280 de ângulo faz o robô girar 90 graus
     # Nesse caso é só fazer a regra de três para o quanto é necessário para outros ângulos
-    mov_degrees = int((213 * degrees) / 90)                                                # Regra de três (já simplificada)
+    mov_degrees = int((214 * degrees) / 90)                                                # Regra de três (já simplificada)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, mov_degrees, 100, velocity=360) # Movendo o robô
 
 async def go_to_pollutant():
@@ -164,6 +166,6 @@ async def go_to_pollutant():
     await runloop.until(lambda: distance() < 4.7)
     motor_pair.stop(motor_pair.PAIR_1)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 55, 0, velocity=500)
-    await turn(angle(0))
+    await turn(angle())
 
 runloop.run(main()) # Rodando a função principal
