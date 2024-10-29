@@ -12,7 +12,7 @@ async def main():
     center_color = 0
 
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 980, 0, velocity=540)
-    await turn(98)
+    await turn(93)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, 1200, 0, velocity=540)
     await microajuste(90)
     await runloop.sleep_ms(100)
@@ -24,34 +24,44 @@ async def main():
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, int(24 * dis), 0, velocity=540)
 
     await runloop.sleep_ms(250)
-    center_color = await color()
+    center_color = "Vermelho"
     print("A cor do centro identicada foi {}".format(center_color))
 
-    for i in range(0, 7):
-        print("{}. poluente:", i)
+    for i in range(0, 8):
+        direction = 1 if i < 4 else -1
+        print("{}. poluente:".format(i))
+        await microajuste()
 
-        if i != 4:
-            await microajuste()
-            await motor_pair.move_for_degrees(motor_pair.PAIR_1, -488, 0, velocity=540)
+        if i == 0:
+            await motor_pair.move_for_degrees(motor_pair.PAIR_1, -492, 0, velocity=540)
             await microajuste()
             await turn(90)
             await microajuste(90)
             motion_sensor.reset_yaw(0)
             await runloop.sleep_ms(100)
             await go_to_pollutant()
-            await do_pollutant_mission(center_color, 1)
-        else:
-            await runloop.sleep_ms(100)
-            await microajuste()
+            await do_pollutant_mission(center_color, direction)
+        elif i == 4:
             await motor_pair.move_for_degrees(motor_pair.PAIR_1, -389, 0, velocity=540)
-            await motor_pair.move_for_degrees(motor_pair.PAIR_1, 426, 100, velocity=540)
+            await turn(180)
             await microajuste(180)
             await runloop.sleep_ms(100)
             motion_sensor.reset_yaw(0)
             await motor_pair.move_for_degrees(motor_pair.PAIR_1, 100, 0, velocity=540)
             await go_to_pollutant()
-            await do_pollutant_mission(center_color, -1)
+            await do_pollutant_mission(center_color, direction)
             motion_sensor.reset_yaw(0)
+        else:
+            await motor_pair.move_for_degrees(motor_pair.PAIR_1, -78, 0, velocity=540)
+            await turn(-90)
+            await microajuste(-90)
+            await motor_pair.move_for_degrees(motor_pair.PAIR_1, 514, 0, velocity=540)
+            await turn(90)
+            await microajuste()
+            await go_to_pollutant()
+            await do_pollutant_mission(center_color, direction)
+            motion_sensor.reset_yaw(0)
+
 
     return
     power_off()
@@ -75,7 +85,7 @@ def angle():
 def distance():
     return distance_sensor.distance(port.C) / 10
 
-async def color(depth=20):
+async def color(depth=40):
     c = color_sensor.color(port.D)
 
     if c == 9:
@@ -86,11 +96,12 @@ async def color(depth=20):
             light_matrix.show_image(light_matrix.IMAGE_GHOST)
             return "Preto"
         else:
+            await runloop.sleep_ms(50)
             return await color(depth - 1)
 
 async def turn(degrees):
     await runloop.sleep_ms(100)
-    mov_degrees = int((213 * degrees) / 90)
+    mov_degrees = int((216 * degrees) / 90)
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, mov_degrees, 100, velocity=360)
 
 async def go_to_pollutant():
@@ -103,7 +114,12 @@ async def go_to_pollutant():
 
 async def microajuste(ang = 0):
     for _ in range(0, 4):
-        await runloop.sleep_ms(50)
-        await turn(ang + angle())
+        if ang == 180:
+            await runloop.sleep_ms(50)
+            await turn(180 - abs(angle()))
+        else:
+            await runloop.sleep_ms(50)
+            await turn(ang + angle())
+ 
 
 runloop.run(main())
