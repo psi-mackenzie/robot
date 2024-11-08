@@ -4,7 +4,7 @@ import motor_pair
 import runloop
 import distance_sensor
 
-async def main():
+async def main():  
     motion_sensor.set_yaw_face(motion_sensor.TOP)
     motion_sensor.reset_yaw(0)
     motor_pair.pair(motor_pair.PAIR_1, port.F, port.E)
@@ -24,7 +24,9 @@ async def main():
     await motor_pair.move_for_degrees(motor_pair.PAIR_1, int(24 * dis), 0, velocity=540)
 
     await runloop.sleep_ms(250)
-    center_color = await color(50)
+    await microajuste(180, 10)
+    center_color = await color(50, port.B)
+    await microajuste(0, 10)
     print("A cor do centro identicada foi {}".format(center_color))
 
     for i in range(0, 8):
@@ -44,7 +46,7 @@ async def main():
         elif i == 4:
             await motor_pair.move_for_degrees(motor_pair.PAIR_1, -400, 0, velocity=540)
             await turn(180)
-            await microajuste(180, 15)
+            await microajuste(180, 20)
             await runloop.sleep_ms(100)
             motion_sensor.reset_yaw(0)
             await motor_pair.move_for_degrees(motor_pair.PAIR_1, 100, 0, velocity=540)
@@ -62,9 +64,8 @@ async def main():
             await do_pollutant_mission(center_color, direction)
             motion_sensor.reset_yaw(0)
 
-
-    return
     power_off()
+    return
 
 async def do_pollutant_mission(center_color, k):
     await runloop.sleep_ms(100)
@@ -85,8 +86,8 @@ def angle():
 def distance():
     return distance_sensor.distance(port.C) / 10
 
-async def color(depth=20):
-    c = color_sensor.color(port.D)
+async def color(depth=20, sensor=port.D):
+    c = color_sensor.color(sensor)
 
     if c == 9:
         light_matrix.show_image(light_matrix.IMAGE_HAPPY)
@@ -96,7 +97,7 @@ async def color(depth=20):
             light_matrix.show_image(light_matrix.IMAGE_GHOST)
             return "Preto"
         else:
-            await runloop.sleep_ms(50)
+            await runloop.sleep_ms(10)
             return await color(depth - 1)
 
 async def turn(degrees, velocity=360):
