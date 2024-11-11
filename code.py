@@ -43,6 +43,14 @@ async def main():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 150, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment(180)
 
+    await do_pollutant_mission(center_color)
+
+    return
+    power_off()
+
+# pollutant mission
+
+async def do_pollutant_mission(center_color):
     for i in range(0, 8):
         direction = 1 if i < 4 else -1
         print("{}. poluente:".format(i))
@@ -54,11 +62,6 @@ async def main():
         else:
             await pollutant_mission_standard_route(center_color, direction)
 
-    return
-    power_off()
-
-# pollutant mission
-
 async def pollutant_mission_route_leaving_the_center(center_color, direction):
     await motor_pair.move_for_degrees(MOTOR_PAIR, 504, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment(180)
@@ -66,7 +69,7 @@ async def pollutant_mission_route_leaving_the_center(center_color, direction):
     await microadjustment(90)
     motion_sensor.reset_yaw(0)
     await go_to_pollutant()
-    await do_pollutant_mission(center_color, direction)
+    await kill_pollutant_if_necessary(center_color, direction)
 
 async def pollutant_mission_route_going_from_one_side_to_the_other(center_color, direction):
     await microadjustment()
@@ -77,7 +80,7 @@ async def pollutant_mission_route_going_from_one_side_to_the_other(center_color,
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment(180)
     await go_to_pollutant()
-    await do_pollutant_mission(center_color, direction)
+    await kill_pollutant_if_necessary(center_color, direction)
     motion_sensor.reset_yaw(0)
 
 async def pollutant_mission_standard_route(center_color, direction): # 
@@ -89,10 +92,10 @@ async def pollutant_mission_standard_route(center_color, direction): #
     await turn(90)
     await microadjustment()
     await go_to_pollutant()
-    await do_pollutant_mission(center_color, direction)
+    await kill_pollutant_if_necessary(center_color, direction)
     motion_sensor.reset_yaw(0)
 
-# useful functions for missions
+# useful functions for pollutant mission
 
 async def go_to_pollutant():
     await microadjustment()
@@ -100,14 +103,14 @@ async def go_to_pollutant():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 50, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
 
-async def do_pollutant_mission(center_color, k):
+async def kill_pollutant_if_necessary(center_color, direction):
     await microadjustment()
     pollutant_color = await read_color_with_depth()
 
     if pollutant_color == center_color:
-        await turn(-DEGREES_TO_KILL_POLLUTANT * k, DEFAULT_VELOCITY)
+        await turn(-DEGREES_TO_KILL_POLLUTANT * direction, DEFAULT_VELOCITY)
         await runloop.sleep_ms(100)
-        await turn(DEGREES_TO_KILL_POLLUTANT * k, DEFAULT_VELOCITY)
+        await turn(DEGREES_TO_KILL_POLLUTANT * direction, DEFAULT_VELOCITY)
 
     await microadjustment()
 
