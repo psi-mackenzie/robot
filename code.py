@@ -1,13 +1,14 @@
 import color_sensor
 import distance_sensor
 from hub import light_matrix, motion_sensor, port, power_off
+import motor
 import motor_pair
 import runloop
 
 # constants
 YAW_FACE=motion_sensor.TOP
 MOTOR_PAIR = motor_pair.PAIR_1
-FIRST_MOTOR_PORT = port.F
+FIRST_MOTOR_PORT = port.C
 SECOND_MOTOR_PORT = port.E
 DEFAULT_SENSOR_COLOR_PORT = port.D
 SECONDARY_SENSOR_COLOR_PORT = port.B
@@ -15,7 +16,7 @@ DISTANCE_SENSOR_PORT = port.C
 DEFAULT_VELOCITY = 540
 MIN_DISTANCE_TO_POLLUTANT = 4.7
 DEGREES_TO_KILL_POLLUTANT = 30
-MOTOR_DEGREES_TO_TURN_90_DEGREES = 214
+MOTOR_DEGREES_TO_TURN_90_DEGREES = 207
 MICROADJUSTMENT_DEPTH = 10
 DEFAULT_SENSOR_COLOR_DEPTH = 100
 
@@ -27,12 +28,15 @@ async def main():
 
     center_color = 0
 
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 920, 0, velocity=DEFAULT_VELOCITY)
-    await turn(91)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 1200, 0, velocity=DEFAULT_VELOCITY)
-    await microadjustment(90)
-    motion_sensor.reset_yaw(0)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 250, 0, velocity=DEFAULT_VELOCITY)
+    await turn(-90)
+    await microadjustment(-90)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 1190, 0, velocity=DEFAULT_VELOCITY)
+    await turn(90)
     await microadjustment()
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -300, 0, velocity=360)
+    motor.run(port.B, 360)
+    return
 
     distance_to_center = get_distance()
     await turn(180)
@@ -83,7 +87,7 @@ async def pollutant_mission_route_going_from_one_side_to_the_other(center_color,
     await kill_pollutant_if_necessary(center_color, direction)
     motion_sensor.reset_yaw(0)
 
-async def pollutant_mission_standard_route(center_color, direction): # 
+async def pollutant_mission_standard_route(center_color, direction): #
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, -55, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
@@ -136,7 +140,7 @@ async def microadjustment(angle = 0):
 # sensor facilitating functions
 
 def get_yaw_angle():
-    return motion_sensor.tilt_angles()[0] / 10
+    return motion_sensor.tilt_angles()[0] / 10 * -1
 
 def get_distance():
     return distance_sensor.distance(DISTANCE_SENSOR_PORT) / 10
