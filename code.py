@@ -8,15 +8,20 @@ import runloop
 # constants
 YAW_FACE=motion_sensor.TOP
 MOTOR_PAIR = motor_pair.PAIR_1
-FIRST_MOTOR_PORT = port.C
-SECOND_MOTOR_PORT = port.E
+FIRST_MOTOR_PORT = port.D
+SECOND_MOTOR_PORT = port.C
+CLAW_MOTOR_PORT = port.B
+CLAW_STRAIGHT_UP_ANGLE = 94
+CLAW_TOTALLY_UP_ANGLE = 111
+CLAW_TOTALLY_DOWN_ANGLE = 25
+PONTO_PERFEITO = 59
 DEFAULT_SENSOR_COLOR_PORT = port.D
 SECONDARY_SENSOR_COLOR_PORT = port.B
 DISTANCE_SENSOR_PORT = port.C
 DEFAULT_VELOCITY = 540
 MIN_DISTANCE_TO_POLLUTANT = 4.7
 DEGREES_TO_KILL_POLLUTANT = 30
-MOTOR_DEGREES_TO_TURN_90_DEGREES = 207
+MOTOR_DEGREES_TO_TURN_90_DEGREES = 213
 MICROADJUSTMENT_DEPTH = 10
 DEFAULT_SENSOR_COLOR_DEPTH = 100
 
@@ -27,15 +32,34 @@ async def main():
     motor_pair.pair(MOTOR_PAIR, FIRST_MOTOR_PORT, SECOND_MOTOR_PORT)
 
     center_color = 0
+    
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 360, direction=motor.SHORTEST_PATH)
 
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 250, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 475, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 1190, 0, velocity=DEFAULT_VELOCITY)
-    await turn(90)
-    await microadjustment()
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -300, 0, velocity=360)
-    motor.run(port.B, 360)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 1105, 0, velocity=DEFAULT_VELOCITY)
+    await turn(-90)
+    await microadjustment(180)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 360, direction=motor.SHORTEST_PATH)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 180, 0, velocity=DEFAULT_VELOCITY)
+    await runloop.sleep_ms(250)
+    print(color_sensor.reflection(port.A))
+    # is_big = color_sensor.reflection(port.D) > 4
+    is_big = True
+
+    if is_big:
+        await motor_pair.move_for_degrees(MOTOR_PAIR, -180, 0, velocity=DEFAULT_VELOCITY)
+        await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 360, direction=motor.SHORTEST_PATH)
+        await motor_pair.move_for_degrees(MOTOR_PAIR, 180, 0, velocity=int(DEFAULT_VELOCITY / 4))
+        await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO, 10, direction=motor.SHORTEST_PATH)
+        await runloop.sleep_ms(1000)
+        await motor_pair.move_for_degrees(MOTOR_PAIR, -340, 0, velocity=DEFAULT_VELOCITY)
+        await turn(90)
+        await microadjustment(-90)
+        await motor_pair.move_for_degrees(MOTOR_PAIR, 180, 0, velocity=DEFAULT_VELOCITY)
+        await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
+
     return
 
     distance_to_center = get_distance()
@@ -134,7 +158,6 @@ async def microadjustment(angle = 0):
         return
 
     for _ in range(0, 9):
-        await runloop.sleep_ms(25)
         await turn(angle - abs(get_yaw_angle()) if angle == 180 else angle - get_yaw_angle())
 
 # sensor facilitating functions
