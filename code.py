@@ -1,3 +1,4 @@
+
 import color_sensor
 import distance_sensor
 from hub import light_matrix, motion_sensor, port, power_off
@@ -56,15 +57,15 @@ async def main():
 
 async def prepare_for_first_tree():
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 180, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 1170, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 1165, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
     await turn(-93)
     await microadjustment(-93)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=DEFAULT_VELOCITY)
-    await runloop.sleep_ms(1000)
-    is_primary_route = color_sensor.reflection(SECONDARY_SENSOR_COLOR_PORT) > 1
-    print(color_sensor.reflection(SECONDARY_SENSOR_COLOR_PORT))
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -235, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -45, 0, velocity=DEFAULT_VELOCITY)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, 15, 180, direction=motor.SHORTEST_PATH)
+    await runloop.sleep_ms(500)
+    is_primary_route = await read_color_with_depth(75, PRIMARY_SENSOR_COLOR_PORT) == "Verde"
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -170, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
     return is_primary_route
 
@@ -80,18 +81,18 @@ async def do_first_tree_primary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 175, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -330, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -220, 0, velocity=DEFAULT_VELOCITY)
     await turn(90)
     await microadjustment()
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=540)
-    await go_to_a_certain_distance(10.1, velocity=90)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 130, 0, velocity=540)
+    await go_to_a_certain_distance(10.1, velocity=180)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -117, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -132, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor.run_for_degrees(SECOND_MOTOR_PORT, 421, 540)
     await microadjustment(-93)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 315, 0, velocity=120)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 245, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO_PEQUENO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
     await motor_pair.move_for_degrees(MOTOR_PAIR, -170, 0, velocity=DEFAULT_VELOCITY)
@@ -102,30 +103,30 @@ async def do_first_tree_primary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, -150, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await go_to_a_certain_distance(18, inverse=True, velocity=180)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -430, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -370, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
 
 async def do_first_tree_secondary_route():
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 230, 0, velocity=120)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 345, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO_PEQUENO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
     await motor_pair.move_for_degrees(MOTOR_PAIR, -165, 0, velocity=DEFAULT_VELOCITY)
     await turn(90)
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=540)
-    await go_to_a_certain_distance(10.1, velocity=90)
+    await go_to_a_certain_distance(10.1, velocity=180)
     await motor_pair.move_for_degrees(MOTOR_PAIR, 20, 0, velocity=540)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor_pair.move_for_degrees(MOTOR_PAIR, -157, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor.run_for_degrees(SECOND_MOTOR_PORT, 421, 540)
     await microadjustment(-94)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -200, 0, velocity=120)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -240, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 240, 0, velocity=120)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 260, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
     await motor_pair.move_for_degrees(MOTOR_PAIR, -390, 0, velocity=DEFAULT_VELOCITY)
@@ -137,7 +138,7 @@ async def do_first_tree_secondary_route():
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await go_to_a_certain_distance(18, inverse=True, velocity=180)
     await microadjustment()
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -430, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -400, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
@@ -146,34 +147,42 @@ async def do_first_tree_secondary_route():
 # pollutant mission
 
 async def prepare_for_pollutant_mission():
-    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -625, 0, velocity=DEFAULT_VELOCITY)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -875, 0, velocity=DEFAULT_VELOCITY * 4)
 
     for i in range(0, 8):
-        await motor_pair.move_for_degrees(MOTOR_PAIR, -50, 25 * (1 if i % 2 == 0 else -1), velocity=DEFAULT_VELOCITY)
+        await motor_pair.move_for_degrees(MOTOR_PAIR, -50, 25 * (1 if i % 2 == 0 else -1), velocity=DEFAULT_VELOCITY * 2)
 
-    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 180, direction=motor.SHORTEST_PATH)
     await microadjustment()
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -225, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -200, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_LINHA, 180, direction=motor.SHORTEST_PATH)
+    motor_pair.move(MOTOR_PAIR, 0, velocity=-90)
+    await runloop.until(lambda: color_sensor.color(PRIMARY_SENSOR_COLOR_PORT) == 0)
+    motor_pair.stop(MOTOR_PAIR)
+
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 120, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
-    await go_to_a_certain_distance(9, velocity=90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 95, 0, velocity=DEFAULT_VELOCITY)
+
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 180, direction=motor.SHORTEST_PATH)
+    await go_to_a_certain_distance(9, velocity=180)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 85, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
     center_color = await read_color_with_depth(SENSOR_COLOR_DEPTH, PRIMARY_SENSOR_COLOR_PORT)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_POLUENTE, 180, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -525, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -540, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
     await turn(90)
     await microadjustment(90)
     motion_sensor.reset_yaw(0)
     await motor_pair.move_for_degrees(MOTOR_PAIR, 350, 0, velocity=DEFAULT_VELOCITY)
-    await go_to_a_certain_distance(8, velocity=90)
+    await go_to_a_certain_distance(8, velocity=180)
     await motor_pair.move_for_degrees(MOTOR_PAIR, 15, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
     return center_color
@@ -204,14 +213,14 @@ async def go_to_next_pollutant_on_another_side():
     motion_sensor.reset_yaw(0)
     await turn(45)
     await microadjustment(45)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 95, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment(45)
     await turn(45)
     await microadjustment(90)
     motion_sensor.reset_yaw(0)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 65, 0, velocity=DEFAULT_VELOCITY)
-    await go_to_a_certain_distance(8, velocity=90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 35, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 85, 0, velocity=DEFAULT_VELOCITY)
+    await go_to_a_certain_distance(8, velocity=180)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 5, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
 
 async def go_to_next_pollutant():
@@ -273,10 +282,10 @@ async def go_to_last_ramp(pollutant_index):
     await microadjustment(90)
     motion_sensor.reset_yaw(0)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -625, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -875, 0, velocity=DEFAULT_VELOCITY * 4)
 
     for i in range(0, 4):
-        await motor_pair.move_for_degrees(MOTOR_PAIR, -50, 25 * (1 if i % 2 == 0 else -1), velocity=DEFAULT_VELOCITY)
+        await motor_pair.move_for_degrees(MOTOR_PAIR, -50, 25 * (1 if i % 2 == 0 else -1), velocity=DEFAULT_VELOCITY * 2)
 
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 180, direction=motor.SHORTEST_PATH)
     await microadjustment()
@@ -296,13 +305,15 @@ async def prepare_for_second_tree():
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
-    await go_to_a_certain_distance(19, velocity=90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -85, 0, velocity=DEFAULT_VELOCITY)
+    await go_to_a_certain_distance(19, velocity=180)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -90, 0, velocity=DEFAULT_VELOCITY)
     await turn(-94)
     await microadjustment(-94)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=DEFAULT_VELOCITY)
-    is_primary_route = color_sensor.reflection(SECONDARY_SENSOR_COLOR_PORT) > 1
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -235, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -45, 0, velocity=DEFAULT_VELOCITY)
+    await motor.run_to_absolute_position(CLAW_MOTOR_PORT, 15, 180, direction=motor.SHORTEST_PATH)
+    await runloop.sleep_ms(500)
+    is_primary_route = await read_color_with_depth(75, PRIMARY_SENSOR_COLOR_PORT) == "Verde"
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -170, 0, velocity=DEFAULT_VELOCITY)
     return is_primary_route
 
 async def do_second_tree(is_primary_route):
@@ -317,11 +328,10 @@ async def do_second_tree_primary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 175, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -40, 0, velocity=DEFAULT_VELOCITY)
     await turn(90)
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=540)
-    await go_to_a_certain_distance(10.1, velocity=90)
+    await go_to_a_certain_distance(10.1, velocity=180)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor_pair.move_for_degrees(MOTOR_PAIR, -150, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
@@ -343,13 +353,13 @@ async def do_second_tree_secondary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 230, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO_PEQUENO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -165, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -185, 0, velocity=DEFAULT_VELOCITY)
     await turn(90)
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=540)
-    await go_to_a_certain_distance(10.1, velocity=90)
+    await go_to_a_certain_distance(10.1, velocity=180)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -137, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -156, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor.run_for_degrees(SECOND_MOTOR_PORT, 421, 540)
     await microadjustment(-94)
@@ -358,7 +368,7 @@ async def do_second_tree_secondary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 240, 0, velocity=120)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, PONTO_PERFEITO, 180, direction=motor.SHORTEST_PATH)
     await microadjustment(-90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -430, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -10, 0, velocity=DEFAULT_VELOCITY)
     await turn(90)
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, -10, 0, velocity=DEFAULT_VELOCITY)
@@ -406,6 +416,9 @@ async def read_color_with_depth(depth=SENSOR_COLOR_DEPTH, sensor=PRIMARY_SENSOR_
     if color == 9:
         light_matrix.write("V")
         return "Vermelho"
+    elif color == 6:
+        return "Verde"
+ 
     if depth == 0:
         light_matrix.write("P")
         return "Preto"
