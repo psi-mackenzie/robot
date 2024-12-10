@@ -41,13 +41,13 @@ async def main():
     motor_pair.pair(MOTOR_PAIR, FIRST_MOTOR_PORT, SECOND_MOTOR_PORT)
 
     is_primary_route = await prepare_for_first_tree()
-    await do_first_tree(False)
+    await do_first_tree(is_primary_route)
 
     center_color = await prepare_for_pollutant_mission()
     await do_pollutant_mission(center_color)
 
     is_primary_route = await prepare_for_second_tree()
-    await do_second_tree(True)
+    await do_second_tree(is_primary_route)
 
     return
     power_off()
@@ -63,6 +63,7 @@ async def prepare_for_first_tree():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=DEFAULT_VELOCITY)
     await runloop.sleep_ms(1000)
     is_primary_route = color_sensor.reflection(SECONDARY_SENSOR_COLOR_PORT) > 1
+    print(color_sensor.reflection(SECONDARY_SENSOR_COLOR_PORT))
     await motor_pair.move_for_degrees(MOTOR_PAIR, -235, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 180, direction=motor.SHORTEST_PATH)
     return is_primary_route
@@ -71,7 +72,7 @@ async def do_first_tree(is_primary_route):
     if is_primary_route:
         await do_first_tree_primary_route()
         return
-    
+
     await do_first_tree_secondary_route()
 
 async def do_first_tree_primary_route():
@@ -85,7 +86,7 @@ async def do_first_tree_primary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, 100, 0, velocity=540)
     await go_to_a_certain_distance(10.1, velocity=90)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_DOWN_ANGLE, 90, direction=motor.SHORTEST_PATH)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -121, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -117, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await motor.run_for_degrees(SECOND_MOTOR_PORT, 421, 540)
     await microadjustment(-93)
@@ -101,7 +102,7 @@ async def do_first_tree_primary_route():
     await motor_pair.move_for_degrees(MOTOR_PAIR, -150, 0, velocity=DEFAULT_VELOCITY)
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await go_to_a_certain_distance(18, inverse=True, velocity=180)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -440, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -430, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
@@ -136,7 +137,7 @@ async def do_first_tree_secondary_route():
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await go_to_a_certain_distance(18, inverse=True, velocity=180)
     await microadjustment()
-    await motor_pair.move_for_degrees(MOTOR_PAIR, -410, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, -430, 0, velocity=DEFAULT_VELOCITY)
     await turn(-90)
     await microadjustment(-90)
     motion_sensor.reset_yaw(0)
@@ -150,7 +151,7 @@ async def prepare_for_pollutant_mission():
 
     for i in range(0, 8):
         await motor_pair.move_for_degrees(MOTOR_PAIR, -50, 25 * (1 if i % 2 == 0 else -1), velocity=DEFAULT_VELOCITY)
-    
+
     await motor.run_to_absolute_position(CLAW_MOTOR_PORT, CLAW_TOTALLY_UP_ANGLE, 90, direction=motor.SHORTEST_PATH)
     await microadjustment()
     await motor_pair.move_for_degrees(MOTOR_PAIR, -225, 0, velocity=DEFAULT_VELOCITY)
@@ -173,14 +174,14 @@ async def prepare_for_pollutant_mission():
     motion_sensor.reset_yaw(0)
     await motor_pair.move_for_degrees(MOTOR_PAIR, 350, 0, velocity=DEFAULT_VELOCITY)
     await go_to_a_certain_distance(8, velocity=90)
-    await motor_pair.move_for_degrees(MOTOR_PAIR, 30, 0, velocity=DEFAULT_VELOCITY)
+    await motor_pair.move_for_degrees(MOTOR_PAIR, 15, 0, velocity=DEFAULT_VELOCITY)
     await microadjustment()
     return center_color
 
 async def do_pollutant_mission(center_color):
     count = 0
 
-    for i in range(0, 7):
+    for i in range(0, 8):
         direction = 1 if i < 4 else -1
         print("{}. poluente:".format(i + 1))
         print("Distance: {}".format(get_distance()))
@@ -239,7 +240,7 @@ async def kill_pollutant_if_necessary(center_color, direction, count):
         print("Killed!")
         await microadjustment()
         return 1
-    
+
     return 0
 
 # second and third tree mission
@@ -267,7 +268,7 @@ async def go_to_last_ramp(pollutant_index):
         motor_pair.stop(MOTOR_PAIR)
         await motor_pair.move_for_degrees(MOTOR_PAIR, 90, 0, velocity=DEFAULT_VELOCITY)
 
-    
+
     await turn(90)
     await microadjustment(90)
     motion_sensor.reset_yaw(0)
